@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { getActiveProducts } from "../../services/productService";
+import { getPriceList } from "../../services/price-service";
 import SectionHeading from "../ui/SectionHeading";
 
 const statusClasses = {
@@ -27,7 +27,7 @@ export default function PriceTable() {
   useEffect(() => {
     async function loadProducts() {
       try {
-        const data = await getActiveProducts();
+        const data = await getPriceList();
         setProducts(data);
       } catch (error) {
         console.error("Lỗi tải bảng giá:", error);
@@ -104,8 +104,12 @@ export default function PriceTable() {
                   <tr>
                     <th className="px-6 py-4">Sản phẩm</th>
                     <th className="px-6 py-4">Đơn vị</th>
-                    <th className="px-6 py-4">Giá tham khảo</th>
-                    <th className="px-6 py-4">Trạng thái</th>
+                    <th className="px-6 py-4">Giá hiện tại</th>
+      
+<th className="px-6 py-4">Giá cũ</th>
+<th className="px-6 py-4">Thay đổi</th>
+<th className="px-6 py-4">Cập nhật</th>
+<th className="px-6 py-4">Trạng thái</th>
                   </tr>
                 </thead>
 
@@ -142,19 +146,61 @@ export default function PriceTable() {
                       </td>
 
                       <td className="px-6 py-5 font-extrabold text-primary-500">
-                        {formatPrice(product)}
-                      </td>
+  {formatPrice(product)}
+</td>
 
-                      <td className="px-6 py-5">
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-bold ${
-                            statusClasses[product.stock_status] ??
-                            "bg-slate-100 text-slate-700"
-                          }`}
-                        >
-                          {product.stock_status || "Chưa cập nhật"}
-                        </span>
-                      </td>
+<td className="px-6 py-5 text-slate-600">
+  {product.oldPrice !== null
+    ? `${Number(product.oldPrice).toLocaleString("vi-VN")}đ`
+    : "Chưa có"}
+</td>
+
+<td className="px-6 py-5">
+  {product.priceDirection === "up" && (
+    <span className="font-bold text-rose-600">
+      ▲{" "}
+      {Number(
+        Math.abs(product.priceDifference)
+      ).toLocaleString("vi-VN")}
+      đ
+    </span>
+  )}
+
+  {product.priceDirection === "down" && (
+    <span className="font-bold text-emerald-600">
+      ▼{" "}
+      {Number(
+        Math.abs(product.priceDifference)
+      ).toLocaleString("vi-VN")}
+      đ
+    </span>
+  )}
+
+  {product.priceDirection === "unchanged" && (
+    <span className="text-slate-500">
+      Không đổi
+    </span>
+  )}
+</td>
+
+<td className="px-6 py-5 text-slate-600">
+  {product.priceUpdatedAt
+    ? new Date(
+        product.priceUpdatedAt
+      ).toLocaleDateString("vi-VN")
+    : "Chưa cập nhật"}
+</td>
+
+<td className="px-6 py-5">
+  <span
+    className={`rounded-full px-3 py-1 text-xs font-bold ${
+      statusClasses[product.stock_status] ??
+      "bg-slate-100 text-slate-700"
+    }`}
+  >
+    {product.stock_status || "Chưa cập nhật"}
+  </span>
+</td>
                     </tr>
                   ))}
                 </tbody>

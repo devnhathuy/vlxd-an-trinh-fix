@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase";
 
 export default function AdminQuotesPage() {
   const [quotes, setQuotes] = useState([]);
+  const [selectedQuote, setSelectedQuote] = useState(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({
     type: "",
@@ -36,7 +37,36 @@ export default function AdminQuotesPage() {
     setQuotes(data ?? []);
     setLoading(false);
   }
+async function updateQuoteStatus(id, status) {
+  const { error } = await supabase
+    .from("quotation_requests")
+    .update({ status })
+    .eq("id", id);
 
+  if (error) {
+    console.error("Lỗi cập nhật trạng thái:", error);
+
+    setMessage({
+      type: "error",
+      text: `Không thể cập nhật trạng thái: ${error.message}`,
+    });
+
+    return;
+  }
+
+  setQuotes((currentQuotes) =>
+    currentQuotes.map((quote) =>
+      quote.id === id
+        ? { ...quote, status }
+        : quote
+    )
+  );
+
+  setMessage({
+    type: "success",
+    text: "Đã cập nhật trạng thái báo giá.",
+  });
+}
   function formatDate(value) {
     if (!value) return "—";
 
@@ -94,6 +124,9 @@ export default function AdminQuotesPage() {
         <table className="min-w-full text-sm">
           <thead className="bg-slate-50">
             <tr className="text-left text-slate-600">
+                <th className="px-4 py-3 font-bold">
+  Chi tiết
+</th>
               <th className="px-4 py-3 font-bold">
                 Khách hàng
               </th>
@@ -152,21 +185,113 @@ export default function AdminQuotesPage() {
                     {quote.delivery_address || "—"}
                   </td>
 
-                  <td className="px-4 py-3">
-                    <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
-                      {quote.status || "Mới tiếp nhận"}
-                    </span>
-                  </td>
+                 <td className="px-4 py-3">
+  <select
+    value={quote.status || "Mới tiếp nhận"}
+    onChange={(event) =>
+      updateQuoteStatus(
+        quote.id,
+        event.target.value
+      )
+    }
+    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold outline-none focus:border-primary-500"
+  >
+    <option value="Mới tiếp nhận">
+      Mới tiếp nhận
+    </option>
+
+    <option value="Đang xử lý">
+      Đang xử lý
+    </option>
+
+    <option value="Đã báo giá">
+      Đã báo giá
+    </option>
+
+    <option value="Hoàn thành">
+      Hoàn thành
+    </option>
+
+    <option value="Đã hủy">
+      Đã hủy
+    </option>
+  </select>
+</td>
 
                   <td className="whitespace-nowrap px-4 py-3 text-slate-500">
                     {formatDate(quote.created_at)}
                   </td>
+                  <td className="px-4 py-3">
+  <button
+    type="button"
+    onClick={() => setSelectedQuote(quote)}
+    className="rounded-lg bg-blue-600 px-3 py-2 text-xs font-bold text-white hover:bg-blue-700"
+  >
+    Xem
+  </button>
+</td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
       </div>
+      {selectedQuote && (
+  <div className="fixed inset-0 z-50 grid place-items-center bg-black/40">
+    <div className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
+
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-bold">
+          Chi tiết yêu cầu báo giá
+        </h2>
+
+        <button
+          onClick={() => setSelectedQuote(null)}
+          className="text-2xl"
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="space-y-4 text-sm">
+
+        <p>
+          <strong>Khách hàng:</strong>{" "}
+          {selectedQuote.full_name}
+        </p>
+
+        <p>
+          <strong>Điện thoại:</strong>{" "}
+          {selectedQuote.phone}
+        </p>
+
+        <p>
+          <strong>Địa chỉ:</strong>{" "}
+          {selectedQuote.delivery_address || "—"}
+        </p>
+
+        <p>
+          <strong>Vật liệu:</strong>{" "}
+          {Array.isArray(selectedQuote.materials)
+            ? selectedQuote.materials.join(", ")
+            : selectedQuote.materials}
+        </p>
+
+        <p>
+          <strong>Số lượng:</strong>{" "}
+          {selectedQuote.estimated_quantity || "—"}
+        </p>
+
+        <p>
+          <strong>Ghi chú:</strong>{" "}
+          {selectedQuote.note || "Không có"}
+        </p>
+
+      </div>
+
+    </div>
+  </div>
+)}
     </div>
   );
 }

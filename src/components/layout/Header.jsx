@@ -56,7 +56,7 @@ export default function Header() {
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
           <a
-            href="tel:09 6666 7626"
+            href="tel:0966667626"
             className="flex items-center gap-2 text-sm font-bold"
           >
             <Phone size={18} className="text-primary-500" />

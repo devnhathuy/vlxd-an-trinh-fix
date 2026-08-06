@@ -8,7 +8,21 @@ import { Link } from "react-router-dom";
 export default function FeaturedProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
+const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+const categories = [
+  "Tất cả",
+  ...new Set(
+    products
+      .map((item) => item.categories?.name)
+      .filter(Boolean)
+  ),
+];
+const filteredProducts =
+  selectedCategory === "Tất cả"
+    ? products
+    : products.filter(
+        (item) => item.categories?.name === selectedCategory
+      );
   useEffect(() => {
     async function loadProducts() {
       try {
@@ -33,23 +47,24 @@ export default function FeaturedProducts() {
           description="Một số sản phẩm phổ biến tại khu vực Đức Hòa."
         />
 
-        <div className="mb-8 flex flex-wrap justify-center gap-3">
-          {["Tất cả", "Xi măng", "Sắt thép", "Gạch", "Ống nhựa"].map(
-            (item, index) => (
-              <button
-                key={item}
-                type="button"
-                className={`rounded-full px-4 py-2 text-sm font-bold ${
-                  index === 0
-                    ? "bg-primary-500 text-white"
-                    : "bg-slate-100 text-slate-600"
-                }`}
-              >
-                {item}
-              </button>
-            ),
-          )}
-        </div>
+<div className="mb-8 flex flex-wrap justify-center gap-3">
+  {categories.map((item) => (
+    <button
+      key={item}
+      type="button"
+      onClick={() => setSelectedCategory(item)}
+      className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+        selectedCategory === item
+          ? "bg-primary-500 text-white"
+          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+      }`}
+    >
+      {item}
+    </button>
+  ))}
+</div>
+
+
 
         {loading ? (
           <div className="py-12 text-center font-semibold text-slate-500">
@@ -61,7 +76,7 @@ export default function FeaturedProducts() {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
   <article
     key={product.id}
     className="group overflow-hidden rounded-2xl border bg-white transition hover:-translate-y-1 hover:shadow-soft"

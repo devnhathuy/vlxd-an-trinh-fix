@@ -3,6 +3,7 @@ import {
   ClipboardList,
   Clock3,
   LogOut,
+  Newspaper,
   Phone,
   RefreshCw,
   Search,
@@ -158,31 +159,50 @@ export default function AdminDashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Link
-  to="/admin/products"
-  className="flex items-center rounded-xl bg-primary-500 px-4 py-2 text-sm font-bold text-white hover:bg-primary-600"
->
-  Quản lý sản phẩm
-</Link>
-            <button
-              type="button"
-              onClick={fetchQuotes}
-              className="flex items-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-            >
-              <RefreshCw className="mr-2" size={17} />
-              Làm mới
-            </button>
+          <div className="flex flex-wrap items-center gap-3">
+  <Link
+    to="/admin/products"
+    className="rounded-xl bg-primary-500 px-5 py-3 font-bold text-white hover:bg-primary-600"
+  >
+    Quản lý sản phẩm
+  </Link>
 
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="flex items-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600"
-            >
-              <LogOut className="mr-2" size={17} />
-              Đăng xuất
-            </button>
-          </div>
+  <Link
+    to="/admin/quotes"
+    className="rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 font-bold text-blue-700 hover:bg-blue-100"
+  >
+    Quản lý báo giá
+  </Link>
+
+  <Link
+    to="/admin/projects"
+    className="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-3 font-bold text-emerald-700 hover:bg-emerald-100"
+  >
+    Quản lý dự án
+  </Link>
+<Link
+  to="/admin/news"
+  className="inline-flex items-center rounded-xl border border-violet-200 bg-violet-50 px-5 py-3 font-bold text-violet-700 hover:bg-violet-100"
+>
+  <Newspaper className="mr-2" size={18} />
+  Quản lý tin tức
+</Link>
+  <button
+    type="button"
+    onClick={fetchQuotes}
+    className="rounded-xl border border-slate-200 bg-white px-5 py-3 font-bold text-slate-700 hover:bg-slate-50"
+  >
+    Làm mới
+  </button>
+
+  <button
+    type="button"
+    onClick={handleLogout}
+    className="rounded-xl border border-slate-200 bg-white px-5 py-3 font-bold text-slate-700 hover:bg-slate-50"
+  >
+    Đăng xuất
+  </button>
+</div>
         </div>
       </header>
 

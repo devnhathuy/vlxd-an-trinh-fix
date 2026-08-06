@@ -12,7 +12,6 @@ import {
   getProductBySlug,
   getRelatedProducts,
 } from "../services/productService";
-import Button from "../components/ui/Button";
 
 function formatPrice(product) {
   if (product?.price !== null && product?.price !== undefined) {
@@ -51,12 +50,36 @@ const firstGalleryImage = data?.product_images?.[0]?.image_url;
 setSelectedImage(
   firstGalleryImage || data?.image_url || ""
 );
-const relatedData = await getRelatedProducts(
-  data.category_id,
-  data.id,
+setProduct(data);
+
+const sortedGallery =
+  [...(data.product_images || [])].sort(
+    (firstImage, secondImage) =>
+      (firstImage.display_order ?? 0) -
+      (secondImage.display_order ?? 0),
+  );
+
+setSelectedImage(
+  data.image_url ||
+    sortedGallery[0]?.image_url ||
+    "",
 );
 
-setRelatedProducts(relatedData);
+try {
+  const relatedData = await getRelatedProducts(
+    data.category_id,
+    data.id,
+  );
+
+  setRelatedProducts(relatedData);
+} catch (relatedError) {
+  console.error(
+    "Không thể tải sản phẩm liên quan:",
+    relatedError,
+  );
+
+  setRelatedProducts([]);
+}
       } catch (error) {
         console.error("Không thể tải sản phẩm:", error);
         setProduct(null);
@@ -106,10 +129,18 @@ setRelatedProducts(relatedData);
   }
 const galleryImages = [
   ...(product.image_url ? [product.image_url] : []),
-  ...(product.product_images || []).map((image) => image.image_url),
+
+  ...(product.product_images || [])
+    .sort(
+      (firstImage, secondImage) =>
+        (firstImage.display_order ?? 0) -
+        (secondImage.display_order ?? 0),
+    )
+    .map((image) => image.image_url),
 ].filter((imageUrl, index, array) => {
   return imageUrl && array.indexOf(imageUrl) === index;
 });
+
   return (
     <main className="min-h-screen bg-slate-50">
       <section className="border-b border-slate-200 bg-white">
@@ -248,15 +279,18 @@ const galleryImages = [
               </div>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-3">
+  
+<Link
+  to={`/?product=${encodeURIComponent(
+    product.name,
+  )}#bao-gia`}
+  className="inline-flex items-center justify-center rounded-xl bg-primary-500 px-5 py-3 font-extrabold text-white transition hover:bg-primary-600"
+>
+  Nhận báo giá
+</Link>
+   
   <a
-    href="#bao-gia"
-    className="inline-flex items-center justify-center rounded-xl bg-primary-500 px-5 py-3 font-extrabold text-white transition hover:bg-primary-600"
-  >
-    Nhận báo giá
-  </a>
-
-  <a
-    href="tel:0909 264 264"
+    href="tel:0909264264"
     className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-primary-500 px-5 py-3 font-extrabold text-primary-500 transition hover:bg-primary-50"
   >
     <Phone size={18} />
@@ -264,7 +298,7 @@ const galleryImages = [
   </a>
 
   <a
-    href="https://zalo.me/09 6666 7626"
+    href="https://zalo.me/0966667626"
     target="_blank"
     rel="noreferrer"
     className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-blue-500 px-5 py-3 font-extrabold text-blue-600 transition hover:bg-blue-50"

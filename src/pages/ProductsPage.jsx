@@ -7,9 +7,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getActiveProducts } from "../services/productService";
-import { getCategories } from "../services/categoryService";
+import { getActiveCategories } from "../services/categoryService";
 import CategoryFilter from "../components/products/CategoryFilter";
-
 function formatPrice(product) {
   if (product.price !== null && product.price !== undefined) {
     return `${Number(product.price).toLocaleString("vi-VN")}đ`;
@@ -35,10 +34,10 @@ export default function ProductsPage() {
         setLoading(true);
         setErrorMessage("");
 
-        const [productData, categoryData] = await Promise.all([
-          getActiveProducts(),
-          getCategories(),
-        ]);
+const [productData, categoryData] = await Promise.all([
+  getActiveProducts(),
+  getActiveCategories(),
+]);
 
         setProducts(productData);
         setCategories(categoryData);

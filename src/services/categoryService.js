@@ -1,9 +1,15 @@
 import { supabase } from "../lib/supabase";
 
-export async function getCategories() {
+export async function getActiveCategories() {
   const { data, error } = await supabase
     .from("categories")
-    .select("*")
+    .select(`
+      id,
+      name,
+      slug,
+      sort_order,
+      is_active
+    `)
     .eq("is_active", true)
     .order("sort_order", { ascending: true });
 

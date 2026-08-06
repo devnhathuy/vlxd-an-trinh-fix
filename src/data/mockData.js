@@ -1,3 +1,4 @@
+
 import {
   Building2,
   CircleDollarSign,
@@ -122,32 +123,7 @@ export const brands = [
   "SCG",
   "Sika",
 ];
-export const projects = [
-  {
-    title: "Khu dân cư Đức Hòa",
-    location: "Đức Hòa, Long An",
-    materials: "Xi măng • Thép • Gạch",
-    status: "Đã hoàn thành",
-    image:
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    title: "Nhà xưởng công nghiệp",
-    location: "Bến Lức, Long An",
-    materials: "Thép • Tôn • Xi măng",
-    status: "Đang cung cấp",
-    image:
-      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    title: "Công trình nhà phố",
-    location: "Đức Hòa, Long An",
-    materials: "Cát • Đá • Gạch",
-    status: "Đã hoàn thành",
-    image:
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80",
-  },
-];
+
 export const reviews = [
   {
     name: "Nguyễn Văn Minh",
